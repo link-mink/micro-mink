@@ -421,10 +421,27 @@ int umplg_proc_signal(umplg_mngr_t *pm,
                       int usr_flags,
                       void *args);
 
+/**
+ * Find signals by name
+ *
+ * @param[in]   pm          Plugin manager
+ * @param[in]   ptrn        Pattern to match agains
+ * @param[in]   cb          Callback function to call when matched
+ * @param[in]   args        User data
+ *
+ */
 void umplg_match_signal(umplg_mngr_t *pm,
                         const char *ptrn,
                         umplg_shfn_match_t cb,
                         void *args);
+
+/**
+ * Get signal count
+ *
+ * @param[in]   pm          Plugin manager
+ * @return      number of registered signals
+ */
+uint16_t umplg_signal_count(umplg_mngr_t *pm);
 
 /**
  * Add items to standard data descriptor

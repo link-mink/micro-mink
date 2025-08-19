@@ -53,6 +53,7 @@ flags = [
 '-I',os.path.join(DIR_HOME, '.local/include'),
 '-I','/usr/include/json-c',
 '-I','/usr/include/luajit-2.1',
+'-I','/usr/include/dbus-1.0',
 '-I','.',
 '-I','src/include',
 '-I','src/services/sysagent'

@@ -21,6 +21,7 @@ jobs:
     needs: cog-check-job
     env:
       BUILD_WRAPPER_OUT_DIR: build_wrapper_out
+      CODECOV_TOKEN: 6ebd0835-7ade-4a08-acaf-3a5291ec8876
     steps:
       - uses: actions/checkout@v4
         with:
@@ -79,9 +80,7 @@ jobs:
           echo "protocol mqtt" >> /tmp/mosquitto.conf
           mosquitto -c /tmp/mosquitto.conf -v -d
           mosquitto_pub -h 127.0.0.1 -t "mink/DEBUG_UUID/1/cmd" -m test_payload -u user -P password -r
-      - name: Install sonar-scanner and build-wrapper
-        uses: SonarSource/sonarcloud-github-c-cpp@v2
-      - name: Run build-wrapper
+      - name: run unit tests
         run: |
           export ASAN_OPTIONS=verify_asan_link_order=0
           export CC=gcc-13
@@ -89,10 +88,6 @@ jobs:
           ./configure --enable-mqtt \
                       --enable-mosquitto-auth \
                       --enable-openwrt
-          build-wrapper-linux-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR  }} \
-          make clean all
-      - name: run unit tests
-        run: |
           rm -f /tmp/tmp_file_uuid
           bash ./test/test_bin_upload.sh &
           sudo LD_LIBRARY_PATH=/usr/local/lib /usr/local/sbin/ubusd &
@@ -100,15 +95,12 @@ jobs:
       - name: generate coverage data
         run: |
           mkdir coverage-dir
-          cd coverage-dir
           sudo rm /usr/bin/gcov
           sudo ln -s /usr/bin/gcov-13 /usr/bin/gcov
-          gcovr --sonarqube coverage.xml -r ..
-          cd ..
-      - name: Run sonar-scanner
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN  }}
-        run: |
-          sonar-scanner --define sonar.cfamily.build-wrapper-output="${{ env.BUILD_WRAPPER_OUT_DIR  }}" \
-                        --define sonar.coverageReportPaths=coverage-dir/coverage.xml
+          gcovr --xml-pretty -o coverage-dir/coverage.xml -r .
+      - name: upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ env.CODECOV_TOKEN }}
+          files: coverage-dir/coverage.xml
+          fail_ci_if_error: true

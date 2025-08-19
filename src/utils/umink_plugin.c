@@ -203,6 +203,12 @@ umplg_match_signal(umplg_mngr_t *pm,
     }
 }
 
+uint16_t
+umplg_signal_count(umplg_mngr_t *pm)
+{
+    return HASH_COUNT(pm->signals);
+}
+
 static void
 add_cmd_id_map_item(int cmd_id, const char *name, umplg_mngr_t *pm)
 {

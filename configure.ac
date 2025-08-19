@@ -175,6 +175,21 @@ if test "x$enable_openwrt" != "xno"; then
                  [AC_MSG_ERROR([libubus not found!])])
 fi
 
+# /*********/
+# /* dbus  */
+# /*********/
+AC_ARG_ENABLE(dbus,
+              [AS_HELP_STRING([--enable-dbus], [Enable dbus support [default=no]])],,
+              [enable_dbus=no])
+AM_CONDITIONAL(ENABLE_DBUS, test "x$enable_dbus" = "xyes")
+if test "x$enable_dbus" != "xno"; then
+    AC_DEFINE([ENABLE_DBUS], [1], [Enable dbus support])
+    PKG_CHECK_MODULES([DBUS], [dbus-1], [], [AC_MSG_ERROR([libdbus-1 not found!])])
+fi
+
+
+
+
 # /****************************/
 # /* Checks for header files. */
 # /****************************/

@@ -15,7 +15,6 @@ AlignAfterOpenBracket: Align
 AlignEscapedNewlines: Left
 BinPackArguments: false
 BinPackParameters: false
-AllowShortCaseLabelsOnASingleLine: false
 BreakBeforeBinaryOperators: None
 ColumnLimit: 80
 FixNamespaceComments: true

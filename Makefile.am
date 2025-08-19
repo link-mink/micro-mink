@@ -307,3 +307,8 @@ endif
 if ENABLE_OPENWRT
 include src/services/sysagent/plugins/openwrt/Makefile.am
 endif
+
+# dbus support plugin
+if ENABLE_DBUS
+include src/services/sysagent/plugins/dbus/Makefile.am
+endif

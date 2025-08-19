@@ -11,7 +11,6 @@
 #include <umink_plugin.h>
 #include <pthread.h>
 #include <umdaemon.h>
-#include <linkhash.h>
 #include <uthash.h>
 #include <time.h>
 #include <utarray.h>
