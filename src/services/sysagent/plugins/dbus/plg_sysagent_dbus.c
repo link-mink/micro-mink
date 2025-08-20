@@ -8,7 +8,6 @@
  *
  */
 
-#include "dbus/dbus-protocol.h"
 #include <umink_pkg_config.h>
 #include <umink_plugin.h>
 #include <umatomic.h>
@@ -19,7 +18,6 @@
 #include <uthash.h>
 #include <time.h>
 #include <utarray.h>
-#include <MQTTAsync.h>
 #include <spscq.h>
 #include <semaphore.h>
 #include <uuid/uuid.h>

@@ -40,9 +40,6 @@ noinst_LTLIBRARIES = libumd.la \
                      libumdb.la \
                      libumcounters.la \
                      libumlua.la
-if ENABLE_COAP
-noinst_LTLIBRARIES += libumrpc.la
-endif
 
 # umink daemon
 libumd_la_SOURCES = src/umd/umdaemon.c
@@ -72,12 +69,6 @@ libumlua_la_LIBADD = libumdb.la
 # umink counters
 libumcounters_la_SOURCES = src/utils/umcounters.c
 libumcounters_la_CFLAGS = ${COMMON_INCLUDES}
-
-# umink rpc
-if ENABLE_COAP
-libumrpc_la_SOURCES = src/utils/umrpc.c
-libumrpc_la_CFLAGS = ${COMMON_INCLUDES}
-endif
 
 # programs and libraries
 bin_PROGRAMS = sysagentd
@@ -109,10 +100,6 @@ sysagentd_LDADD = libumd.la \
                   ${JSON_C_LIBS} \
                   ${LUA_LIBS} \
                   -ldl
-if ENABLE_COAP
-sysagentd_LDADD += libumrpc.la
-sysagentd_SOURCES += src/include/umrpc.h
-endif
 
 # unit tests
 check_PROGRAMS = check_umdb \
@@ -312,3 +299,10 @@ endif
 if ENABLE_DBUS
 include src/services/sysagent/plugins/dbus/Makefile.am
 endif
+
+# coap support plugin
+if ENABLE_COAP
+include src/services/sysagent/plugins/coap/Makefile.am
+endif
+
+

@@ -114,7 +114,9 @@ enum umplg_cmd_t {
     /** Ivoke Lua call */
     CMD_LUA_CALL = 36,
     /** Setup MQTT binary file upload */
-    CMD_MQTT_BINARY_UPLOAD = 37
+    CMD_MQTT_BINARY_UPLOAD = 37,
+    /** Send via COAP */
+    CMD_COAP_SEND = 38
 };
 
 /**

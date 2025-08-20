@@ -19,9 +19,6 @@
 #include <dirent.h>
 #include <json_tokener.h>
 #include <umcounters.h>
-#ifdef ENABLE_COAP
-#include <umrpc.h>
-#endif
 
 // daemon name and description
 const char *UMD_TYPE = "umsysagent";
@@ -53,10 +50,9 @@ print_help()
     printf(" %s\n %s\n %s\n %s\n %s\n\n",
            "-?    help",
            "-i    unique daemon id",
-           "-p    plugin path",
+           "-c    config",
            "-v    display version",
            "-D    start in debug mode");
-    printf("%s\n %s\n", "Plugins:", "--plugins-cfg    Plugins configuration file");
 }
 
 // process args
@@ -65,8 +61,7 @@ proc_args(umdaemon_t *umd, int argc, char **argv)
 {
     int opt;
     int option_index = 0;
-    struct option long_options[] = { { "plugins-cfg", required_argument, 0, 0 },
-                                     { 0, 0, 0, 0 } };
+    struct option long_options[] = { { 0, 0, 0, 0 } };
 
     // mandatory param count
     int mpc = 0;
@@ -74,18 +69,13 @@ proc_args(umdaemon_t *umd, int argc, char **argv)
     sysagentdd_t *dd = umd->data;
 
     // get args
-    while ((opt = getopt_long(argc, argv, "?i:p:vD", long_options, &option_index)) != -1) {
+    while ((opt = getopt_long(argc, argv, "?i:c:p:vD", long_options, &option_index)) != -1) {
         switch (opt) {
         // long options
         case 0:
             if (long_options[option_index].flag != 0)
                 break;
             switch (option_index) {
-            // plugins-cfg
-            case 0:
-                dd->plg_cfg_f = optarg;
-                ++mpc;
-                break;
             default:
                 break;
             }
@@ -103,9 +93,9 @@ proc_args(umdaemon_t *umd, int argc, char **argv)
             ++mpc;
             break;
 
-        // plugin path
-        case 'p':
-            dd->plg_pth = optarg;
+        // config
+        case 'c':
+            dd->plg_cfg_f = optarg;
             ++mpc;
             break;
 
@@ -125,7 +115,7 @@ proc_args(umdaemon_t *umd, int argc, char **argv)
         }
     }
 
-    if (mpc < 3) {
+    if (mpc < 2) {
         print_help();
         exit(EXIT_FAILURE);
     }
@@ -222,7 +212,7 @@ load_cfg(sysagentdd_t *dd)
     fread(b, fsz, 1, f);
     fclose(f);
 
-    // process plugins configurataion
+    // process configurataion
     dd->cfg = json_tokener_parse(b);
     if (dd->cfg == NULL) {
         printf("%s\n", "ERROR: Invalid plugins configuration file");
@@ -231,6 +221,11 @@ load_cfg(sysagentdd_t *dd)
     // set plugin manager cfg pointer
     dd->pm->cfg = dd->cfg;
     free(b);
+    // get plugin path
+    struct json_object *j_plg_p = json_object_object_get(dd->cfg, "plugins_dir");
+    if (j_plg_p != NULL && json_object_is_type(j_plg_p, json_type_string)) {
+        dd->plg_pth = json_object_get_string(j_plg_p);
+    }
 }
 
 // main

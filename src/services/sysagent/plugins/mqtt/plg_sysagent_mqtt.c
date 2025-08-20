@@ -36,7 +36,7 @@
 /*************/
 /* Plugin ID */
 /*************/
-static const char *PLG_ID = "plg_sysagent_mqtt.so";
+static const char *PLG_ID = "mqtt";
 
 /**********************************************/
 /* list of command implemented by this plugin */
@@ -49,7 +49,6 @@ int COMMANDS[] = { CMD_MQTT_PUBLISH,
 /*************/
 /* constants */
 /*************/
-static const char *SIG_MQTT_RX = "mqtt:RX";
 static const int SIG_SEM_TIMEOUT = 5;
 
 /******************************/
@@ -74,6 +73,8 @@ struct mqtt_conn_d {
     char *bin_upl_path;
     // signal thread semaphore
     sem_t sig_sem;
+    // rx signal handler
+    char *rxh;
     // hashable
     UT_hash_handle hh;
 };
@@ -182,7 +183,7 @@ mqtt_proc_thread(void *args)
             char *b = NULL;
             size_t b_sz = 0;
             // process signal
-            umplg_proc_signal(conn->pm, SIG_MQTT_RX, data, &b, &b_sz, 0, NULL);
+            umplg_proc_signal(conn->pm, conn->rxh, data, &b, &b_sz, 0, NULL);
             if (b != NULL) {
                 free(b);
             }
@@ -653,6 +654,8 @@ mqtt_mngr_add_conn(struct mqtt_conn_mngr *m,
     struct json_object *j_pth_qsz = json_object_object_get(j_conn, "proc_thread_qsize");
     // binary upload path
     struct json_object *j_bin_path = json_object_object_get(j_conn, "bin_upload_path");
+    // rx handler
+    struct json_object *j_rxh = json_object_object_get(j_conn, "rx_handler");
     // sanity check
     if (j_addr == NULL || j_name == NULL) {
         return NULL;
@@ -692,6 +695,8 @@ mqtt_mngr_add_conn(struct mqtt_conn_mngr *m,
     if (c->bin_upl_path == NULL) {
         c->bin_upl_path = strdup("/tmp");
     }
+    // rx handler
+    c->rxh = strdup(json_object_get_string(j_rxh));
     pthread_create(&c->sig_th, NULL, &mqtt_proc_thread, c);
     // lock
     pthread_mutex_lock(&m->mtx);
@@ -839,6 +844,7 @@ process_cfg(umplg_mngr_t *pm, struct mqtt_conn_mngr *mngr)
             struct json_object *j_pwd = json_object_object_get(j_conn, "password");
             struct json_object *j_pth_qsz = json_object_object_get(j_conn, "proc_thread_qsize");
             struct json_object *j_bin_path = json_object_object_get(j_conn, "bin_upload_path");
+            struct json_object *j_rxh = json_object_object_get(j_conn, "rx_handler");
             // all values are mandatory
             if (!(j_n && j_addr && j_clid && j_usr && j_pwd)) {
                 umd_log(UMD,
@@ -873,6 +879,16 @@ process_cfg(umplg_mngr_t *pm, struct mqtt_conn_mngr *mngr)
                     umd_log(UMD,
                             UMD_LLT_ERROR,
                             "plg_mqtt: [wrong type for 'bin_upload_path']");
+                    return 6;
+                }
+            }
+
+            // rx handler
+            if (j_rxh != NULL) {
+                if (!json_object_is_type(j_rxh, json_type_string)) {
+                    umd_log(UMD,
+                            UMD_LLT_ERROR,
+                            "plg_mqtt: [wrong type for 'rx_handler']");
                     return 6;
                 }
             }
@@ -930,7 +946,7 @@ mqtt_module_sig_run(umplg_sh_t *shd,
     // add MQTT sub-module
     lua_pushstring(L, "mqtt");
     init_mqtt_lua_module(L);
-    // add SDMC module table to M table
+    // add module table to M table
     lua_settable(L, -3);
     // remove M table from stack
     lua_pop(L, 1);
