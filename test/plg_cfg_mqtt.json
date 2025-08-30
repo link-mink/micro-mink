@@ -10,6 +10,7 @@
         "keep_alive": 3600,
         "proc_thread_qsize": 256,
         "bin_upload_path": "/tmp/mink.bin",
+        "rx_handler": "mqtt:RX",
         "subscriptions": [
           "mink/DEBUG_UUID/+/cmd",
           "mink.bin/#"
