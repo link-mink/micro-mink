@@ -1,11 +1,11 @@
 
 # umink
 
-![License](https://img.shields.io/github/license/dfranusic/micro-mink)
-![Last Commit](https://img.shields.io/github/last-commit/dfranusic/micro-mink)
-![Stars](https://img.shields.io/github/stars/dfranusic/micro-mink?style=social)
-[![CI](https://github.com/dfranusic/micro-mink/actions/workflows/on_push.yml/badge.svg)](https://github.com/dfranusic/micro-mink/actions/workflows/on_push.yml)
-[![codecov](https://codecov.io/gh/dfranusic/micro-mink/branch/main/graph/badge.svg)](https://codecov.io/gh/dfranusic/micro-mink)
+![License](https://img.shields.io/github/license/link-mink/micro-mink)
+![Last Commit](https://img.shields.io/github/last-commit/link-mink/micro-mink)
+![Stars](https://img.shields.io/github/stars/link-mink/micro-mink?style=social)
+[![CI](https://github.com/link-mink/micro-mink/actions/workflows/on_push.yml/badge.svg)](https://github.com/link-mink/micro-mink/actions/workflows/on_push.yml)
+[![codecov](https://codecov.io/gh/link-mink/micro-mink/branch/main/graph/badge.svg)](https://codecov.io/gh/link-mink/micro-mink)
 ![Lua](https://img.shields.io/badge/lua-5.3%2B-blue)
 
 **umink** (micro-mink) is a lightweight, distributed software framework designed for **low-power devices**, **IoT environments**, and **industrial systems**.  

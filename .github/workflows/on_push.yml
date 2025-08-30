@@ -21,7 +21,7 @@ jobs:
     needs: cog-check-job
     env:
       BUILD_WRAPPER_OUT_DIR: build_wrapper_out
-      CODECOV_TOKEN: 6ebd0835-7ade-4a08-acaf-3a5291ec8876
+      CODECOV_TOKEN: 98684e0e-cb5d-4adf-8d74-60e75ac29573
     steps:
       - uses: actions/checkout@v4
         with:
