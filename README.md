@@ -27,7 +27,7 @@ It hides complex operations behind the simplicity of **Lua scripting**, enabling
   umink nodes can share data with each other across a federated network.
 
 - **Two supported protocols**  
-  - [CoAP](https://coap.technology/) for constrained, lightweight deployments.  
+  - [CoAP](https://libcoap.net/) for constrained, lightweight deployments.  
   - [MQTT](https://mqtt.org/) (via [Eclipse Mosquitto](https://mosquitto.org/)) for integration with external tools (analytics, web frontends, dashboards).
 
 - **AI-powered anomaly detection**  
