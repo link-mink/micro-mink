@@ -743,6 +743,7 @@ mqtt_mngr_del_conn(struct mqtt_conn_mngr *m, const char *name, bool th_safe)
         HASH_DEL(m->conns, tmp_conn); // GCOVR_EXCL_BR_LINE
         MQTTAsync_destroy(&tmp_conn->client);
         free(tmp_conn->name);
+        free(tmp_conn->rxh);
         utarray_free(tmp_conn->topics);
         free(tmp_conn->bin_upl_path);
         free(tmp_conn);
