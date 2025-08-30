@@ -696,7 +696,9 @@ mqtt_mngr_add_conn(struct mqtt_conn_mngr *m,
         c->bin_upl_path = strdup("/tmp");
     }
     // rx handler
-    c->rxh = strdup(json_object_get_string(j_rxh));
+    if (j_rxh != NULL){
+        c->rxh = strdup(json_object_get_string(j_rxh));
+    }
     pthread_create(&c->sig_th, NULL, &mqtt_proc_thread, c);
     // lock
     pthread_mutex_lock(&m->mtx);
