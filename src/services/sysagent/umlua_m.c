@@ -715,3 +715,37 @@ mink_lua_do_db_get(lua_State *L)
     return 1;
 }
 
+/*******/
+/* log */
+/*******/
+int
+mink_lua_log(lua_State *L)
+{
+    // level, message
+    if (lua_gettop(L) < 2) {
+        return 0;
+    }
+
+    // string values required
+    if (!(lua_isstring(L, 1) && lua_isstring(L, 2))) {
+        return 0;
+    }
+
+    // get values
+    const char *l = lua_tostring(L, 1);
+    const char *m = lua_tostring(L, 2);
+
+    // default level
+    int i_l = UMD_LLT_INFO;
+
+    if (strcmp(l, "warn") == 0) {
+        i_l = UMD_LLT_WARNING;
+    } else if (strcmp(l, "error") == 0) {
+        i_l = UMD_LLT_ERROR;
+    }
+
+    umd_log(UMD, i_l, m);
+
+    return 0;
+
+}

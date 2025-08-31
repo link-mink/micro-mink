@@ -79,6 +79,7 @@ int mink_lua_do_perf_set(lua_State *L);
 int mink_lua_do_perf_match(lua_State *L);
 int mink_lua_do_db_set(lua_State *L);
 int mink_lua_do_db_get(lua_State *L);
+int mink_lua_log(lua_State *L);
 
 // registered lua module methods
 static const struct luaL_Reg mink_lualib[] = {
@@ -90,6 +91,7 @@ static const struct luaL_Reg mink_lualib[] = {
     { "perf_match", &mink_lua_do_perf_match },
     { "db_set", &mink_lua_do_db_set },
     { "db_get", &mink_lua_do_db_get },
+    { "log", &mink_lua_log },
     { NULL, NULL }
 };
 
